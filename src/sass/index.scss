@@ -1,2 +1,44 @@
 @import './common';
 @import './example';
+
+
+.form {
+background-color: rgb(50, 50, 189);
+ height: 50px;
+ 
+}
+// .search-form {
+//     display: block;
+//     margin: 0 auto;
+// }
+
+.photo-card {
+    margin: 0 auto;
+    border: 1px solid black;
+    margin: 5px;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+img {
+    display: block;
+}
+
+.load-more.is-hidden{
+   display: none;
+   
+}
+
+.load-more{
+    display: flex;
+    align-items: center;
+        margin: 0 auto;
+        padding: 15px;
+        background-color: rgb(72, 72, 208);
+        cursor: pointer;
+        color:white;
+        border: none;
+        border-radius: 15px;
+}
