@@ -1,20 +1,32 @@
 @import './common';
 @import './example';
 
-
-.form {
-background-color: rgb(50, 50, 189);
- height: 50px;
- 
+.search-form {
+    display: block;
+    text-align: center;
+    padding-top: 13px;
+    background-color: rgb(106, 106, 234);
+    padding-bottom: 13px;
 }
-// .search-form {
-//     display: block;
-//     margin: 0 auto;
-// }
-
+input {
+    border: none;
+    padding: 3px 5px;
+    border-radius: 6px;
+}
+.submit-btn {
+    cursor: pointer;
+    border-radius: 3px;
+    border: none;
+    width: 80px;
+    height: 24px;
+}
+p {
+    margin: 0;
+    font-size: 8px;
+    line-height: 1.2;
+}
 .photo-card {
-    margin: 0 auto;
-    border: 1px solid black;
+    
     margin: 5px;
 }
 
@@ -22,23 +34,42 @@ background-color: rgb(50, 50, 189);
     display: flex;
     flex-wrap: wrap;
 }
-img {
-    display: block;
+.photo-card {
+    width: 190px;
+    margin: 10px;
+    box-shadow: 3px 2px 3px rgba(23, 5, 5, 0.106);
 }
 
+
+img {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info {
+    display: flex;
+
+}
+.info-item {
+    align-items: center;
+    margin-bottom: 5px;
+    margin-right: 2px;
+    margin-left: 5px;
+}
+
+
 .load-more.is-hidden{
-   display: none;
-   
+   display: none;   
 }
 
 .load-more{
     display: flex;
     align-items: center;
-        margin: 0 auto;
-        padding: 15px;
-        background-color: rgb(72, 72, 208);
-        cursor: pointer;
-        color:white;
-        border: none;
-        border-radius: 15px;
+    margin: 0 auto;
+    padding: 12px;
+    background-color: rgb(72, 72, 208);
+    cursor: pointer;
+    color:white;
+    border: none;
+    border-radius: 15px;
 }

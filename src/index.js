@@ -1,15 +1,17 @@
+
 import NewsApi from "./js/fetchNews";
 import Notiflix from 'notiflix';
+
+
 
 const formEl = document.getElementById("search-form");
 const inputEl = document.querySelector("input");
 const listImg = document.querySelector(".gallery");
-const addBtn = document.querySelector(".load-more");
-
 const objNews = new NewsApi();
+const loadMoreBtn = document.querySelector(".load-more");
 
+loadMoreBtn.addEventListener("click", onClickAddNews);
 formEl.addEventListener("submit", onSubmitFom);
-addBtn.addEventListener("click", onClickAddNews);
 
 
 function onSubmitFom(e) {
@@ -17,46 +19,44 @@ function onSubmitFom(e) {
     
     objNews.inputValue = inputEl.value.trim();
     objNews.resetPage();
-    objNews.getNews()
-    .then(img => {
-        if (img.hits.length === 0) {
-                
-            const warning = Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-            listImg.innerHTML = "";
-            addBtn.classList.add("is-hidden");
-            return
-            }
+    loadMoreBtn.classList.add("is-hidden");
     
-        const success = Notiflix.Notify.success("Hooray! We found 500 images.")
-        const markup = img.hits.reduce((acc, elem) => {
-            return createMarkup(elem) + acc
-        }, "");
-       
-        listImg.innerHTML = markup;
-        addBtn.classList.remove("is-hidden");
-    }).finally(() => {
-        e.target.reset();
+    objNews.getNews()
+        .then(img => {
+            if (img.hits.length === 0) {
+            warningMessage();
+                listImg.innerHTML = "";
+            return
+            } else if (img.hits.length !== 0) {
+                loadingBtn();
+            }
+        
+        successMessage(img);
+        addMarkupSubmit(img);
+            showBtn();
+            
+        })
+        .finally(() => {
+            e.target.reset();
     })
 };
 
 
-
 function onClickAddNews() {
-    objNews.getNews().then(img => {
-        const markup = img.hits.reduce((acc, elem) => {
-            return createMarkup(elem) + acc
-        }, "");
-       
-        listImg.insertAdjacentHTML("beforeend", markup);
-    })
+    loadingBtn();
+    objNews.getNews()
+    .then(addMarkupClick)
+    .finally(showBtn);
+    
 }
 
 
-function createMarkup({webformatURL,largeImageURL,tags,likes,views,comments,downloads}) {
-    
+function createMarkup({webformatURL,largeImageURL,tags,likes,views,comments,downloads}) {  
     return `
       <div class="photo-card">
-      <img src="${webformatURL}" alt="${tags}" loading="lazy" width="200"/>
+      <a href="${largeImageURL}"> 
+      <img src="${webformatURL}" alt="${tags}" loading="lazy" width="190" height="120"/>
+      </a>
        <div class="info">
          <p class="info-item">
           <b>Likes ${likes}</b>
@@ -76,16 +76,44 @@ function createMarkup({webformatURL,largeImageURL,tags,likes,views,comments,down
 }
 
 
+function successMessage({ totalHits }) {
+    const success = Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+}
+
+function warningMessage() {
+    const warning = Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+}
+
+
+function addMarkupSubmit(img) {
+      const markup = img.hits.reduce((acc, elem) => {
+            return createMarkup(elem) + acc
+        }, ""); 
+       
+       listImg.innerHTML = markup;
+}
+
+
+function addMarkupClick(img) {
+     const markup = img.hits.reduce((acc, elem) => {
+            return createMarkup(elem) + acc
+     }, "");
+     listImg.insertAdjacentHTML("beforeend", markup);
+}
 
 
 
 
+function loadingBtn() {
+    loadMoreBtn.classList.remove("is-hidden");
+    loadMoreBtn.textContent = "Loading..."
+    loadMoreBtn.style.backgroundColor = "grey";
+    loadMoreBtn.disabled = true;
+}
 
 
-
-
-
-
-
-
-
+function showBtn() {
+    loadMoreBtn.textContent = "Load more"
+    loadMoreBtn.style.backgroundColor = "rgb(50, 50, 189)";
+    loadMoreBtn.disabled = false;
+}
