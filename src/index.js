@@ -54,9 +54,7 @@ function onClickAddNews() {
 function createMarkup({webformatURL,largeImageURL,tags,likes,views,comments,downloads}) {  
     return `
       <div class="photo-card">
-      <a href="${largeImageURL}"> 
       <img src="${webformatURL}" alt="${tags}" loading="lazy" width="190" height="120"/>
-      </a>
        <div class="info">
          <p class="info-item">
           <b>Likes ${likes}</b>
