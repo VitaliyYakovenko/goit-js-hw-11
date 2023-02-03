@@ -2,53 +2,78 @@
 import NewsApi from "./js/fetchNews";
 import Notiflix from 'notiflix';
 
-
-
 const formEl = document.getElementById("search-form");
 const inputEl = document.querySelector("input");
 const listImg = document.querySelector(".gallery");
 const objNews = new NewsApi();
 const loadMoreBtn = document.querySelector(".load-more");
 
-loadMoreBtn.addEventListener("click", onClickAddNews);
-formEl.addEventListener("submit", onSubmitFom);
+const counter = {
+    count: 40,
+}
 
+formEl.addEventListener("submit", async (e) => {
 
-function onSubmitFom(e) {
     e.preventDefault();
-    
     objNews.inputValue = inputEl.value.trim();
     objNews.resetPage();
     loadMoreBtn.classList.add("is-hidden");
-    
-    objNews.getNews()
-        .then(img => {
-            if (img.hits.length === 0) {
+    e.target.reset();
+    counter.count = 40;
+    try {
+        const img = await objNews.getNews();   
+        const amountImg = img.totalHits;
+
+        if (img.hits.length === 0) {
+            
             warningMessage();
-                listImg.innerHTML = "";
+            listImg.innerHTML = "";
             return
-            } else if (img.hits.length !== 0) {
-                loadingBtn();
-            }
+        }
         
+            if (img.hits.length !== img.totalHits) {
+                 loadingBtn();
+            }
+
+            if (objNews.inputValue === "") {
+                warningMessage();
+                loadMoreBtn.classList.add("is-hidden");
+                listImg.innerHTML = "";
+                return
+            }
+            
+  
         successMessage(img);
         addMarkupSubmit(img);
-            showBtn();
-            
-        })
-        .finally(() => {
-            e.target.reset();
-    })
-};
+        showBtn()
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 
-function onClickAddNews() {
-    loadingBtn();
-    objNews.getNews()
-    .then(addMarkupClick)
-    .finally(showBtn);
-    
-}
+
+loadMoreBtn.addEventListener("click", async () => { 
+
+    try {
+        loadingBtn()
+        const img = await objNews.getNews();
+        const amountImg = img.totalHits;
+        counter.count += 40;
+        addMarkupClick(img);
+        if (amountImg <= counter.count) {
+            const warning = Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.")
+            loadMoreBtn.classList.add("is-hidden");
+            return;
+        }       
+         showBtn()
+          
+    } catch (error) {
+        console.log(error);
+    }
+  
+});
+
 
 
 function createMarkup({webformatURL,largeImageURL,tags,likes,views,comments,downloads}) {  
@@ -115,3 +140,9 @@ function showBtn() {
     loadMoreBtn.style.backgroundColor = "rgb(50, 50, 189)";
     loadMoreBtn.disabled = false;
 }
+
+
+
+
+
+
